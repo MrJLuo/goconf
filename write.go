@@ -49,7 +49,7 @@ func writeToFile(data map[string]map[string]string, path string) (err error) {
 			return err
 		}
 	}
-	file, err := os.OpenFile(path, os.O_RDWR&os.O_CREATE, os.ModePerm)
+	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		print(err)
 	}
