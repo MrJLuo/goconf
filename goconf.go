@@ -32,7 +32,7 @@ package goconf
 import (
 	"fmt"
 	"regexp"
-	"strings"
+	_ "strings"
 )
 
 // ConfigFile is the representation of configuration settings.
@@ -80,8 +80,7 @@ var (
 // AddSection adds a new section to the configuration.
 // It returns true if the new section was inserted, and false if the section already existed.
 func (c *ConfigFile) AddSection(section string) bool {
-	section = strings.ToLower(section)
-
+	// section = strings.ToLower(section)
 	if _, ok := c.data[section]; ok {
 		return false
 	}
@@ -93,7 +92,7 @@ func (c *ConfigFile) AddSection(section string) bool {
 // RemoveSection removes a section from the configuration.
 // It returns true if the section was removed, and false if section did not exist.
 func (c *ConfigFile) RemoveSection(section string) bool {
-	section = strings.ToLower(section)
+	// section = strings.ToLower(section)
 
 	switch _, ok := c.data[section]; {
 	case !ok:
@@ -116,8 +115,8 @@ func (c *ConfigFile) RemoveSection(section string) bool {
 func (c *ConfigFile) AddOption(section string, option string, value string) bool {
 	c.AddSection(section) // make sure section exists
 
-	section = strings.ToLower(section)
-	option = strings.ToLower(option)
+	// section = strings.ToLower(section)
+	// option = strings.ToLower(option)
 
 	_, ok := c.data[section][option]
 	c.data[section][option] = value
@@ -129,8 +128,8 @@ func (c *ConfigFile) AddOption(section string, option string, value string) bool
 // It returns true if the option and value were removed, and false otherwise,
 // including if the section did not exist.
 func (c *ConfigFile) RemoveOption(section string, option string) bool {
-	section = strings.ToLower(section)
-	option = strings.ToLower(option)
+	// section = strings.ToLower(section)
+	// option = strings.ToLower(option)
 
 	if _, ok := c.data[section]; !ok {
 		return false
@@ -152,6 +151,10 @@ func NewConfigFile() *ConfigFile {
 	c.AddSection(DefaultSection) // default section always exists
 
 	return c
+}
+
+func (c *ConfigFile) ReadFromFile() map[string]map[string]string {
+	return c.data
 }
 
 type GetError struct {

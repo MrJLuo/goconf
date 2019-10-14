@@ -31,6 +31,34 @@ func (c *ConfigFile) WriteConfigBytes(header string) (config []byte) {
 	return buf.Bytes()
 }
 
+func writeToFile(data map[string]map[string]string, path string) (err error) {
+	buf := bytes.NewBuffer(nil)
+	for section, sectionmap := range data {
+		if section == DefaultSection && len(sectionmap) == 0 {
+			continue // skip default section if empty
+		}
+		if _, err = buf.WriteString("[" + section + "]\n"); err != nil {
+			return err
+		}
+		for option, value := range sectionmap {
+			if _, err = buf.WriteString(option + "=" + value + "\n"); err != nil {
+				return err
+			}
+		}
+		if _, err = buf.WriteString("\n"); err != nil {
+			return err
+		}
+	}
+	file, err := os.OpenFile(path, os.O_RDWR&os.O_CREATE, os.ModePerm)
+	if err != nil {
+		print(err)
+	}
+
+	file.Write(buf.Bytes())
+	file.Close()
+	return nil
+}
+
 // Writes the configuration file to the io.Writer.
 func (c *ConfigFile) Write(writer io.Writer, header string) (err error) {
 	buf := bytes.NewBuffer(nil)
@@ -59,6 +87,8 @@ func (c *ConfigFile) Write(writer io.Writer, header string) (err error) {
 	}
 
 	buf.WriteTo(writer)
+
+	//writeToFile(c.data, "/opt/etc/devserver1.conf")
 
 	return nil
 }
